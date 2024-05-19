@@ -42,10 +42,21 @@ app.post("/babelfish", async (req, res)=>{
 
     const data = req.body;
 
-    const newMessage = await pool.query("INSERT INTO messages (username, message, time) VALUES($1, $2, $3)", [data.username, data.message, data.time]);
+    const newMessage = await pool.query("INSERT INTO messages (username, message, time) VALUES($1, $2, $3) RETURNING *", [data.username, data.message, data.time]);
 
-    res.json(newMessage);
+    res.json(newMessage.rows[0]);
 
+  } catch (err) {
+    console.error(err.message);
+  }
+})
+
+//get all messages
+app.get("/babelfish", async (req, res)=>{
+  try {
+    const allMessages = await pool.query("SELECT * FROM messages");
+
+    res.json(allMessages.rows);
   } catch (err) {
     console.error(err.message);
   }
