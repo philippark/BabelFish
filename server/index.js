@@ -32,6 +32,27 @@ const pool = require("./db");
 app.use(cors());
 app.use(express.json());
 
+
+//Routes
+
+//create a message
+app.post("/babelfish", async (req, res)=>{
+  try {
+    console.log(req.body);
+
+    const data = req.body;
+
+    const newMessage = await pool.query("INSERT INTO messages (username, message, time) VALUES($1, $2, $3)", [data.username, data.message, data.time]);
+
+    res.json(newMessage);
+
+  } catch (err) {
+    console.error(err.message);
+  }
+})
+
+//update language
+
 app.listen(5000, ()=>{
   console.log("Listening on port 5000");
 })
